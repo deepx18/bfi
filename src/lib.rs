@@ -64,7 +64,7 @@ pub mod interpreter {
 
             let mut content: String = String::new();
             match file.read_to_string(&mut content) {
-                Ok(msg) => println!("Message : {msg}"),
+                Ok(_msg) => {}
                 Err(err) => {
                     println!("Can't read the file : {err}\n");
                     process::exit(0);
@@ -86,11 +86,8 @@ pub mod interpreter {
                     ',' => self.tokens.push(InstToken::new(InstKind::TakeInput)),
                     '[' => self.tokens.push(InstToken::new(InstKind::OpenLoop)),
                     ']' => self.tokens.push(InstToken::new(InstKind::CloseLoop)),
-                    _ => println!("{:?}", c),
+                    _ => {}
                 }
-            }
-            for token in &self.tokens {
-                println!("{:?}", token);
             }
         }
 
@@ -105,14 +102,13 @@ pub mod interpreter {
                     InstKind::FormwardPtr => self.pointer += 1,
                     InstKind::BackwardPtr => self.pointer -= 1,
                     InstKind::PrintBuf => println!("{:?}", self.buffer),
-                    InstKind::PrintByte => println!("{:?}", self.buffer[self.pointer] as char),
+                    InstKind::PrintByte => print!("{}", self.buffer[self.pointer] as char),
                     InstKind::TakeInput => {
                         let mut buf: [u8; 1] = [0];
                         let mut stdin = stdin();
                         if stdin.read_exact(&mut buf).is_ok() {
                             self.buffer[self.pointer] = buf[0];
                         }
-                        println!("{:?}", buf)
                     }
                     InstKind::OpenLoop => {
                         self.in_loop = true;
